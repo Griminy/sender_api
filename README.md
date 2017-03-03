@@ -1,24 +1,12 @@
-# README
+# To run server 
+  - be rails server
+  - be sidekiq -C config/sidekiq.yml
+  
+# Sidekiq view
+  - http://localhost:3000/sidekiq/
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Tests
+  - be rails test  
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# Use example(without delay)
+  - curl -v -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST http://localhost:3000/api/messages -d "{\"message\":{\"body\":\"hello, Dude\", \"delay_to\":\"\", \"sender_id\":\"11\", \"recipient_id\":\"12\", \"locations\":[\"watsapp\", \"telegram\"]}}"

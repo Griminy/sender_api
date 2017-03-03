@@ -14,7 +14,7 @@ class PostMessagesTest < ActiveSupport::TestCase
   end
 
   test 'should send messeges with valid params' do
-    service = PostMessage.run(@success_params)
+    service = PostMessages.run(@success_params)
     assert service.valid?
     assert_equal 3, service.result.length
     assert_equal 3, Message.count
@@ -24,7 +24,7 @@ class PostMessagesTest < ActiveSupport::TestCase
   end
 
   test 'should not create messages with wrong params' do
-    service = PostMessage.run(@wrong_params)
+    service = PostMessages.run(@wrong_params)
     refute service.valid?
     assert_equal 2, service.errors.count
     assert_equal "Wrong delay format(1 minute)", service.errors.full_messages.first
@@ -32,7 +32,7 @@ class PostMessagesTest < ActiveSupport::TestCase
   end
 
   test 'should not create messages with blank params' do
-    service = PostMessage.run(@blank_params)
+    service = PostMessages.run(@blank_params)
     refute service.valid?
     assert_equal 1, service.errors.count
     assert_equal "Locations is not a valid array", service.errors.full_messages.first
