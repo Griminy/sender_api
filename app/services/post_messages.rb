@@ -29,13 +29,9 @@ class PostMessages < ActiveInteraction::Base
 
   private
 
-  def set_delay_time
-    eval(delay_to.split(" ").join("."))
-  end
-
   def delay_messages
     @messeges.each do |msg|
-      MessageSenderWorker.perform_in(set_delay_time, msg.id)
+      MessageSenderWorker.perform_in(delay_to.to_i.seconds, msg.id)
     end
   end
 
@@ -56,24 +52,8 @@ class PostMessages < ActiveInteraction::Base
   end
 
   def validate_delay
-    if delay_to.present?
-      time = delay_to.split(" ")
-      number_valid = time.first =~ /^[1-9]{1,1}+[0-9]{0,5}$/
-      
-      valid_time = set_valid_time_methods
-      word_valid = valid_time.include?(time.last)
-      errors.add(:base, 
-                 I18n.t('services.post_message.wrong_delay_format')) unless number_valid && word_valid
-    end
-  end
-
-  def set_valid_time_methods
-    methods = ["day", "minute", "week", "mounth"]
-    tmp = []
-    methods.each do |t|
-      tmp << t+"s"
-    end
-    methods.concat(tmp)
+    errors.add(:base, 
+               I18n.t('services.post_message.wrong_delay_format')) if delay_to.present? && delay_to !~ /^[1-9]{1,1}+[0-9]{0,5}$/
   end
 
   def validate_for_repeat
@@ -81,7 +61,7 @@ class PostMessages < ActiveInteraction::Base
       same_messages = Message.where("location = ? and recipient_id = ? and body = ?", 
                                     location, recipient_id, body)
       last_message_at = same_messages.order('sended_at asc').pluck(:sended_at).compact.last
-      
+
       if last_message_at && last_message_at >= Time.zone.now - 1.minute
         errors.add(:base, I18n.t('services.post_message.repeated_message'))
       end
@@ -91,7 +71,7 @@ class PostMessages < ActiveInteraction::Base
   def validate_locations
     messengers = ['telegram', 'watsapp', 'viber']
     locations.each do |l|
-      errors.add(:base, I18n.t('services.post_message.wrong_location')) unless messengers.include?(l)
+      errors.add(:base, I18n.t('services.post_message.wrong_location')) unless messengers.include?(l.downcase)
     end
   end
 

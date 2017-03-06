@@ -7,5 +7,5 @@ en:
   services: 
     post_message: 
       repeated_message: "You can repeat this message after 1 minute"
-      wrong_delay_format: "Wrong delay format(1 minute)"
+      wrong_delay_format: "Wrong delay format(in seconds)."
       wrong_location: "One of messangers does not exist"

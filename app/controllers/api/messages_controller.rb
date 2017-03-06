@@ -4,7 +4,7 @@ class Api::MessagesController < ApplicationController
                      :if => Proc.new { |c| c.request.format == 'application/json' }
 
   def create
-    service = PostMessages.run(params[:message])#(permitted_params[:message])
+    service = PostMessages.run(params[:message])
     if service.valid?
       render :status => 200,
              :json => { notice: t('.success'),

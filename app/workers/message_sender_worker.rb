@@ -15,6 +15,9 @@ class MessageSenderWorker
         raise
       end
     rescue Exception => e
+      puts "********************************worker"
+      puts e.inspect
+      puts "********************************worker"
     ensure
       ActiveRecord::Base.clear_active_connections!
       ActiveRecord::Base.connection.close

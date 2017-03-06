@@ -27,7 +27,7 @@ class PostMessagesTest < ActiveSupport::TestCase
     service = PostMessages.run(@wrong_params)
     refute service.valid?
     assert_equal 2, service.errors.count
-    assert_equal "Wrong delay format(1 minute)", service.errors.full_messages.first
+    assert_equal "Wrong delay format(in seconds).", service.errors.full_messages.first
     assert_equal "One of messangers does not exist", service.errors.full_messages.last
   end
 
