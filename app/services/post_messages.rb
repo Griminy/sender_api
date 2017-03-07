@@ -8,7 +8,7 @@ class PostMessages < ActiveInteraction::Base
             :sender_id, :recipient_id, presence: true
 
   validates :body, length: {in: 1..500}
-  validate :validate_for_repeat, :validate_delay, :validate_locations
+  validate :validate_delay, :validate_locations, :validate_for_repeat
 
   def execute
     Message.connection.transaction do
@@ -57,7 +57,7 @@ class PostMessages < ActiveInteraction::Base
   end
 
   def validate_for_repeat
-    last_messages = Message.where("sended_at >= ?", Time.zone.now - 1.minute)
+    last_messages = Message.where("sended_at >= ?", Time.zone.now - 1.minute + delay_to.to_i.seconds)
     locations.each do |location|
       same_last_messages = last_messages.
                              where("location = ? and recipient_id = ? and body = ?", 
