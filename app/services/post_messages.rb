@@ -57,13 +57,15 @@ class PostMessages < ActiveInteraction::Base
   end
 
   def validate_for_repeat
+    last_messages = Message.where("sended_at >= ?", Time.zone.now - 1.minute)
     locations.each do |location|
-      same_messages = Message.where("location = ? and recipient_id = ? and body = ?", 
-                                    location, recipient_id, body)
-      last_message_at = same_messages.order('sended_at asc').pluck(:sended_at).compact.last
+      same_last_messages = last_messages.
+                             where("location = ? and recipient_id = ? and body = ?", 
+                                   location, recipient_id, body)
 
-      if last_message_at && last_message_at >= Time.zone.now - 1.minute
+      if same_last_messages.any?
         errors.add(:base, I18n.t('services.post_message.repeated_message'))
+        break
       end
     end
   end

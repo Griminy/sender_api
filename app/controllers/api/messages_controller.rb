@@ -12,7 +12,7 @@ class Api::MessagesController < ApplicationController
     else
       render :status => 400,
              :json => { notice: t('.fail'),
-                        errors: service.errors.full_messages.uniq }
+                        errors: service.errors.full_messages }
     end
   end
 
